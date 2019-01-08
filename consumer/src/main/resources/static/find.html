@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $.ajax({
+            url:"/findCategory.do",
+            type:"post",
+            data:{},
+            dataType:"json",
+            success:function (data) {
+                var opt=" <option value=\"\">全部</option>";
+                $.each(data,function () {
+                    opt+="<option value='"+this.id+"'>"+this.name+"</option>"
+                })
+                $("select").append(opt);
+                nav(1)
+            }
+        });
+
+
+    })
+    function nav(i) {
+        var categoryId=$("[name=categoryId]").val();
+        var title=$("[name=title]").val();
+        $.ajax({
+            url:"/find.do",
+            type:"post",
+            data:{"pageNo":i,"categoryId":categoryId,"title":title},
+            dataType:"json",
+            success:function (data) {
+                $("form").empty();
+                var str="";
+                str+="<table border=\"1px\">";
+                str+="    <thead><tr><td  colspan='6' align='center'><h1>新闻标题</h1></td></tr></thead>";
+                str+="    <tr>";
+                str+="    <td>编号</td>";
+                str+="    <td>新闻标题</td>";
+                str+="    <td>新闻摘要</td>";
+                str+="    <td>作者</td>";
+                str+="    <td>创建时间</td>";
+                str+="    <td>操作</td>";
+                str+="</tr>";
+                $.each(data.list,function () {
+                    str+="    <tr>";
+                    str+="        <td>"+this.id+"</td>";
+                    str+="        <td>"+this.title+"</td>";
+                    str+="        <td>"+this.summary+"</td>";
+                    str+="        <td>"+this.author+"</td>";
+                    str+="        <td>"+this.createDate+ "</td>";
+                    str+="        <td><a href='update.html?id="+this.id+"'>修改</a></td>";
+                    str+="    </tr>";
+                })
+                str+="<td colspan='7' align='center'><a href='javascript:nav(1)'>首页</a>";
+                str+="<a href='javascript:nav("+data.prePage+")'>上一页</a>";
+                str+="<a href='javascript:nav("+data.nextPage+")'>下一页</a>";
+                str+="<a href='javascript:nav("+data.pages+")'>末页</a></td></tr>";
+                str+="</table>";
+                $("form").append(str);
+                $("tbody tr:odd").css("background","#BBFFFF")
+            }
+        });
+    }
+    function check() {
+        nav(1);
+    }
+</script>
+<body>
+<div>
+<span>
+        <select name="categoryId">
+
+        </select>
+    </span>
+    <span>新闻标题<input type="text" name="title"><input type="button" value="查询" onclick="check()"></span>
+</div>
+<form>
+
+</form>
+</body>
+</html>

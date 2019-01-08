@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper
+        PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="cn.kgc.mapper.DetailMapper">
+    <select id="find" resultType="cn.kgc.vo.Detail">
+        select id,categoryId,title,summary,author,DATE_FORMAT(createDate,'%Y-%m-%d %H:%i:%s') as createDate
+        ,DATE_FORMAT(updateDate,'%Y-%m-%d %H:%i:%s') as updateDate from news_detail  where 1=1
+        <if test="title!=null and title!=''">
+             and title like concat('%',#{title},'%')
+        </if>
+        <if test="categoryId!=null">
+             and categoryId =#{categoryId}
+        </if>
+    </select>
+    <select id="findById" resultType="cn.kgc.vo.Detail">
+        select * from news_detail where id=#{id}
+    </select>
+    <update id="update" parameterType="cn.kgc.vo.Detail">
+        update news_detail set categoryId=#{categoryId},title=#{title},summary=#{summary},author=#{author},updateDate=#{updateDate} where id=#{id}
+    </update>
+    <select id="findCategory" resultType="cn.kgc.vo.Category">
+        select * from news_category;
+    </select>
+</mapper>

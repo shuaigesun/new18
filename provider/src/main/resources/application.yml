@@ -1,0 +1,13 @@
+server:
+  port: 9090
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/news12?serverTimezone=UTC
+    username: root
+    password: sunxinshuai
+mybatis:
+  mapper-locations: mapper/*.xml
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true

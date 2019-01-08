@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript">
+$(function () {
+    var url=location.search;
+    var id=url.replace(/[^0-9]/ig,"");
+    $.ajax({
+        url:"/findId.do",
+        type:"post",
+        data:{"id":id},
+        dataType:"json",
+        success:function (data) {
+            var str="";
+            str+="<table>";
+            str+="    <th>更新新闻内容</th>";
+            str+="    <tr>";
+            str+="        <td>新闻编号</td>";
+            str+="        <td><input type=\"text\" value=\""+data.detail.id+"\" name=\"id\"></td>";
+            str+="    </tr>";
+            str+="    <tr>";
+            str+="        <td>新闻分类</td>";
+            str+="        <td>";
+            str+="            <select name=\"categoryId\">";
+            $.each(data.category,function () {
+                str+="          <option value='"+this.id+"'>"+this.name+"</option>";
+            })
+            str+="            </select>";
+            str+="        </td>";
+            str+="    </tr>";
+            str+="    <tr>";
+            str+="        <td>新闻标题</td>";
+            str+="        <td><input type=\"text\" value=\""+data.detail.title+"\" name=\"title\"></td>";
+            str+="    </tr>";
+            str+="    <tr>";
+            str+="        <td>新闻摘要</td>";
+            str+="        <td><input type=\"text\" value=\""+data.detail.summary+"\" name=\"summary\"></td>";
+            str+="    </tr>";
+            str+="    <tr>";
+            str+="        <td>作者</td>";
+            str+="        <td><input type=\"text\" value=\""+data.detail.author+"\" name=\"author\"></td>";
+            str+="    </tr>";
+            str+="</table>";
+            $("form").append(str);
+            $("select option[value='"+data.detail.categoryId+"']").attr("selected","selected");
+
+        }
+    });
+    $("#jiao").click(function () {
+        var name=$("[name=title]").val();
+        if(name==""){
+            alert("标题不能为空");
+            return false;
+        }else{
+        $.ajax({
+            url:"/update.do",
+            type:"post",
+            data:$("form").serialize(),
+            dataType:"json",
+            success:function (data) {
+                console.log(data)
+                if(data.ok=="ok"){
+                    alert("修改成功")
+                    window.location.href='list.html';
+                }else if(data=="2"){
+                    alert("修改失败")
+                    window.location.href='list.html';
+                }
+            }
+        });
+        }
+    })
+})
+
+</script>
+<body>
+<form action="">
+
+</form>
+    <tr>
+        <td>
+            <input type="button" value="提交" id="jiao">
+            <input type="button" value="返回" onclick="javascript:window.location.href='list.html'">
+        </td>
+    </tr>
+
+</body>
+</html>
